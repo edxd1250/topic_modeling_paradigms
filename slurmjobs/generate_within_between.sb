@@ -1,0 +1,28 @@
+#!/bin/sh --login
+
+#SBATCH --job-name=0_to_264_generate_topics
+#SBATCH --nodes=2
+#SBATCH --time=12:00:00
+#SBATCH --mem=100GB
+#SBATCH --gpus=v100:2
+#SBATCH -e /mnt/home/ande2472/sbatchjobs/outputs/generate_within_between/%x_%j_error_file.sb.e
+#SBATCH -o /mnt/home/ande2472/sbatchjobs/outputs/generate_within_between/%x_%j_out_file.sb.o
+
+echo "Starting job on `hostname` at `date`"
+module purge
+
+module load Conda
+
+
+conda activate /mnt/home/ande2472/miniconda3/envs/hdbscan5
+
+
+cd /mnt/home/ande2472/github/topic_modeling_paradigms/
+
+# -data_file /mnt/scratch/ande2472/data/1147_latest.csv -rank_file /mnt/home/ande2472/data/full_clean_data/sortedranks.csv 
+
+python generate_within_between.py -m /mnt/scratch/ande2472/model_output/topic_modeling/0_to_264/model_outliers_reduced -e /mnt/scratch/ande2472/data/0_topjournals/0_topjournals_embs.pickle -d /mnt/scratch/ande2472/model_output/topic_modeling/0_to_264/new_docs.pickle -o /mnt/scratch/ande2472/model_output/topic_modeling/0_to_264/plots
+
+
+
+scontrol show job $SLURM_JOB_ID

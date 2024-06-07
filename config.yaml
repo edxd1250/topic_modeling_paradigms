@@ -1,0 +1,38 @@
+env:
+  rand_seed : 20240418
+  #directory where all files will be saved
+  work_dir : '/home/shius/projects/plantbert/' 
+  #directory where original raw pubmed data is stored
+  xml_path : '/mnt/scratch/ande2472/rawpubmed'
+
+
+parse_xml:
+  #path to gzipped xmls
+  xml_path : '/mnt/scratch/ande2472/rawpubmed'
+  output_dir: '/mnt/home/ande2472/data/parsed_tsv_files'
+
+generate_embeddings:
+  emb_file: 'embeddings.pickle'
+  sentence_file: 'docs_text.pickle'
+
+generate_topics:
+  emb_file: '/mnt/scratch/ande2472/data/0_topjournals/0to264_topjournals_embs.pickle'
+  clean_file: '/mnt/scratch/ande2472/data/0_topjournals/0to264_topjournals_cleans.pickle'
+
+# hyperparameters for BERTopic Model
+BERTopic:
+  calculate_probabilities : True
+  n_neighbors             : 15  
+  nr_topics               : 100
+  n_gram_range            : (1,2)
+  
+# hyperparameters for cuml.HDBSCAN Clustering Algorithm (to be used in BERTopic)
+# GPU capabilities required
+HDBSCAN:
+  min_cluster_size         : 100
+  min_samples              : 5
+  metric                   : 'euclidean'
+  cluster_selection_method : 'eom'
+  prediction_data          : True
+  output_type              : 'numpy'
+

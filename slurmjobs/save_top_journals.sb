@@ -1,0 +1,30 @@
+#!/bin/sh --login
+#SBATCH -A data-machine
+# #SBATCH --nodelist=acm-[048-049,070-071],nal-[004-007]  # Force job to run on data machine nodes
+#SBATCH --nodes=2  # Reserve only one node
+#SBATCH --time=1:00:00  # Reserve for four hours (or your desired amount of time)
+#SBATCH --mem=500GB  # Set to your desired amount of memory
+#SBATCH --cpus-per-task=120  # Set to your desired number of CPUs
+# #SBATCH --gpus=a100_1g.10gb  # Request one GPU unit on the reserved node
+#SBATCH --job-name save_top_journals
+#SBATCH -e /mnt/home/ande2472/sbatchjobs/outputs/save_top_journals/%x_%j_error_file.sb.e
+#SBATCH -o /mnt/home/ande2472/sbatchjobs/outputs/save_top_journals/%x_%j_out_file.sb.o
+
+echo "Starting job on `hostname` at `date`"
+module purge
+
+module load Conda
+
+
+conda activate /mnt/home/ande2472/miniconda3/envs/hdbscan5
+
+
+cd /mnt/home/ande2472/github/topic_modeling_paradigms/tools
+
+# -data_file /mnt/scratch/ande2472/data/1147_latest.csv -rank_file /mnt/home/ande2472/data/full_clean_data/sortedranks.csv 
+
+python savetopNdata.py -r 0 1200 2400 3600 4800 6000 -n 1000000
+
+
+
+scontrol show job $SLURM_JOB_ID
